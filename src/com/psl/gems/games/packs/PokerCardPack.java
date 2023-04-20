@@ -2,7 +2,6 @@ package com.psl.gems.games.packs;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -16,10 +15,6 @@ import com.psl.gems.games.cards.sorts.AscendingCardComparator;
 import com.psl.gems.games.cards.sorts.DescendingCardComparator;
 public class PokerCardPack {
 	private Set<Card> cards;
-	public PokerCardPack() {
-		super();
-		setAllCards();
-	}
 	public void setAllCards() {
 		Set<Card> cards = new LinkedHashSet<>();
 		for(Suit suit: Suit.values())
@@ -38,10 +33,6 @@ public class PokerCardPack {
 	public void shuffleCards(){
 		List<Card> cards2 = new ArrayList<>(cards);
 		Collections.shuffle(cards2);
-		this.cards = new LinkedHashSet<>(cards2);
-	}
-	public void shuffleCards1(){
-		Set<Card> cards2 = new HashSet<>(cards);
 		this.cards = new LinkedHashSet<>(cards2);
 	}
 	public Card getRandomCard(){
@@ -78,6 +69,10 @@ public class PokerCardPack {
 		this.cards = new LinkedHashSet<>(c1);
 	}
 	
+	public PokerCardPack() {
+		super();
+		cards = new LinkedHashSet<>();
+	}
 	public PokerCardPack(Set<Card> cards) {
 		super();
 		this.cards = cards;

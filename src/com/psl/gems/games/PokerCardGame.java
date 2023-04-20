@@ -1,6 +1,8 @@
 package com.psl.gems.games;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.psl.gems.games.cards.Card;
 import com.psl.gems.games.packs.PokerCardPack;
@@ -8,97 +10,94 @@ import com.psl.gems.games.players.PokerCardPlayer;
 
 public class PokerCardGame {
 	private PokerCardPack pack;
-	private PokerCardPlayer player1;
-	private PokerCardPlayer player2;
-	public PokerCardGame(PokerCardPack pack, PokerCardPlayer player1, PokerCardPlayer player2) {
-		super();
-		this.pack = pack;
-		this.player1 = player1;
-		this.player2 = player2;
+	private List<PokerCardPlayer> players;
+	public void registerPlayer(PokerCardPlayer player) {
+		players.add(player);
 	}
-	public PokerCardGame(PokerCardPlayer player1, PokerCardPlayer player2) {
-		this.player1 = player1;
-		this.player2 = player2;
-	}
-	public PokerCardGame() {
-		super();
-	}
-	public PokerCardPack getPack() {
-		return pack;
-	}
-	public void setPack(PokerCardPack pack) {
-		this.pack = pack;
-	}
-	public PokerCardPlayer getPlayer1() {
-		return player1;
-	}
-	public void setPlayer1(PokerCardPlayer player1) {
-		this.player1 = player1;
-	}
-	public PokerCardPlayer getPlayer2() {
-		return player2;
-	}
-	public void setPlayer2(PokerCardPlayer player2) {
-		this.player2 = player2;
-	}
-	public void distributeCards() {
-		Iterator<Card> itr = pack.getCards().iterator();
-		int i=0;
-		while(i<3 && itr.hasNext()) {
-			player1.addCard(itr.next());
-			player2.addCard(itr.next());
+	private void distributeCards() {
+		if (pack.getCards().size() >= 6) {
+			int i = 0;
+			while(i<3) {
+				for(PokerCardPlayer player: players) {
+					player.addCard(pack.getTopCard());
+					pack.getCards().remove(pack.getTopCard());
+				}
+				i++;
+			}
 		}
+	}
+	public PokerCardPlayer play() {
+
+		if (players.size()>=2) {
+//			// sorting cards of pack in descending order
+//			pack.sortByDescendingOrder();
+//			//sorting cards of pack in ascending order
+//			pack.sortByAscendingOrder();
+//			//random card
+//			Card randomCard = pack.getRandomCard();
+//			//top card
+//			Card topCard = pack.getTopCard();
+//			//size of the pack
+//			int sizeOfPack = pack.getSize();
+			
+
+			pack.shuffleCards();
+			
+			
+			distributeCards();
+			return getWinner();
+		}
+		return null;
+	}
+
+	private PokerCardPlayer getWinner() {
+		
+		int maxWeight=0;
+		int index=0;
+		for(PokerCardPlayer player : players) {
+			if(maxWeight<player.getMaximumWeight()) {
+				maxWeight = player.getMaximumWeight();
+				index = players.indexOf(player);
+			}
+		}
+		return players.get(index);
 	}
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("PokerCardGame [pack=");
 		builder.append(pack);
-		builder.append(", player1=");
-		builder.append(player1);
-		builder.append(", player2=");
-		builder.append(player2);
+		builder.append(", players=");
+		builder.append(players);
 		builder.append("]");
 		return builder.toString();
 	}
-	public void play() {
-		
-		
-		if(player1!=null && player2!=null) {
-			this.pack = new PokerCardPack();
-			System.out.println("Initial Pack : "+pack);
-			pack.sortByAscendingOrder();
-			System.out.println("Ascending Pack : "+pack);
-			pack.sortByDescendingOrder();
-			System.out.println("Descending Pack : "+pack);
-			pack.shuffleCards();
-			System.out.println("Shuffled Pack : "+pack);
-			System.out.println("Top Card = " +pack.getTopCard());
-			System.out.println("size = " +pack.getSize());
-			System.out.println("Random Card = " +pack.getRandomCard());
-			System.out.println("Top Card Weight Value "+ pack.getTopCard().getWeightValue());
-			
-			System.out.println("Distributing Cards ");
-			distributeCards();
-			System.out.println(getWinner().getName());
-		}
-		else {
-			System.out.println("A Minimum of Two Players required to play Poker Card Game");
-		}
-	}
-	public PokerCardPlayer getWinner() {
-		int firstPlayerMaxWeightVaue = player1.getMaximumWeight();
-		int secondPlayerMaxWeightVaue = player2.getMaximumWeight();
-		System.out.println(player1.getName()+"-----"+player1.getMaximumWeight());
-		System.out.println(player2.getName()+"-----"+player2.getMaximumWeight());
-		if(firstPlayerMaxWeightVaue<secondPlayerMaxWeightVaue) {
-			return player2;
-		}
-		if(firstPlayerMaxWeightVaue>secondPlayerMaxWeightVaue) {
-			return player1;
-		}
-		return null;
+	public PokerCardGame(PokerCardPack pack, List<PokerCardPlayer> players) {
+		super();
+		this.pack = pack;
+		this.players = players;
 	}
 
+
+	public PokerCardGame() {
+		super();
+		players = new ArrayList<>();
+	}
+
+	public PokerCardPack getPack() {
+		return pack;
+	}
+
+	public void setPack(PokerCardPack pack) {
+		this.pack = pack;
+	}
+
+	public List<PokerCardPlayer> getPlayers() {
+		return players;
+	}
+
+	public void setPlayers(List<PokerCardPlayer> players) {
+		this.players = players;
+	}
 
 }
